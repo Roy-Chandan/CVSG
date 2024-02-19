@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: > 
+  Billing alarms
+
+Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - W3002 # Ignore Lambda string references to code folder path
+    
+Resources:
+  BudgetExample:
+    Type: "AWS::Budgets::Budget"
+    Properties:
+      Budget:
+        BudgetName: "CVSG-Dev-Budget"
+        BudgetLimit:
+          Amount: 10
+          Unit: USD # AUD does not work
+        BudgetType: COST
+        TimeUnit: MONTHLY
+        # TimePeriod:
+        #   Start: 1225864800
+        #   End: 1926864800
+        # CostFilters:
+        #   AZ:
+        #     - !Sub "${ap-southeast-2}"
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            ThresholdType: PERCENTAGE
+            Threshold: 100
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: adam.blewitt@xylem.com
+            - SubscriptionType: EMAIL
+              Address: blake@leadingedgeengineering.com.au
+        - Notification:
+            NotificationType: FORECASTED
+            ComparisonOperator: GREATER_THAN
+            ThresholdType: PERCENTAGE
+            Threshold: 100
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: chandan.roy@xylem.com
+            - SubscriptionType: EMAIL
+              Address: chandan.roy@xylem.com
